@@ -18,8 +18,8 @@ const Barra = () => {
   };
   const navigate = useNavigate();
 
-  const handleNavigateAdminEmpleado = () => {
-    navigate("/AdminEmpleados");
+  const handleNavigate = (path: string) => {
+    navigate(path);
   };
   return (
     <div
@@ -70,7 +70,11 @@ const Barra = () => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleNavigateAdminEmpleado}>
+        {" "}
+        <MenuItem onClick={() => handleNavigate("/MainPage")}>
+          Menu Principal
+        </MenuItem>
+        <MenuItem onClick={() => handleNavigate("/AdminEmpleados")}>
           Administracion Empleados
         </MenuItem>
       </Menu>
