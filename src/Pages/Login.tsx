@@ -11,11 +11,13 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import RegistrarUsuario from "./Registrar/RegistrarUsuario";
+import { useNavigate } from "react-router-dom";
 interface IUser {
   username: string;
   password: string;
 }
 const Login = (): ReactElement => {
+  const navigate = useNavigate();
   const [user, setUser] = useState<IUser>({
     username: "",
     password: "",
@@ -23,6 +25,9 @@ const Login = (): ReactElement => {
   const [seePassword, setSeePassword] = useState<boolean>(false);
   const [openRegistrarUsuario, setOpenRegistrarUsuario] =
     useState<boolean>(false);
+  const handleNavigate = () => {
+    navigate("/MainPage");
+  };
   return (
     <div
       style={{
@@ -149,6 +154,7 @@ const Login = (): ReactElement => {
             }}
           >
             <Button
+              onClick={handleNavigate}
               sx={{
                 height: "40%",
                 width: "60%",
