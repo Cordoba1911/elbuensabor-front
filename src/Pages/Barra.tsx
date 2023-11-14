@@ -25,7 +25,7 @@ const Barra = () => {
     <div
       style={{ ...fullDiv, backgroundColor: "#F2EAE1", alignItems: "center" }}
     >
-      <div style={{ width: "50px", height: "50px", marginLeft: "30px" }}>
+      <div onClick={()=>navigate('/MainPage')} style={{cursor:'pointer', width: "50px", height: "50px", marginLeft: "30px" }}>
         <img src={Logo} style={{ width: "50px", height: "50px" }} />
       </div>
       <TextField

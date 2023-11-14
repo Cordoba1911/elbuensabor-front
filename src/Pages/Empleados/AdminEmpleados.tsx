@@ -48,15 +48,15 @@ const AdminEmpleados = () => {
       sortable: true,
     },
     {
-      field: "Email",
-      headerName: "Email",
+      field: "Apellido",
+      headerName: "Apellido",
       width: 300,
       editable: false,
       sortable: true,
     },
     {
-      field: "Edad",
-      headerName: "Edad",
+      field: "Telefono",
+      headerName: "Telefono",
       width: 200,
       editable: false,
       sortable: true,
@@ -67,11 +67,17 @@ const AdminEmpleados = () => {
       width: 140,
       editable: false,
       sortable: true,
+    }, {
+      field: "Rol",
+      headerName: "Rol",
+      width: 140,
+      editable: false,
+      sortable: true,
     },
   ];
   const [rows, setRows] = useState([
     {
-      id: 0,
+      empleado_id: 0,
       Nombre: "Juan",
       Apellido:'Perez',
       Email: "mailexample@gmail.com",
@@ -80,7 +86,7 @@ const AdminEmpleados = () => {
       Departamento:'ddddddddd', 
     },
     {
-      id: 1,
+      empleado_id: 1,
       Nombre: "Pepe",
       Apellido:'Rodriguez',
       Email: "mailexample@gmail.com",
@@ -99,14 +105,14 @@ const AdminEmpleados = () => {
     () =>
       customAxiosInstance.get('ACA VA LA URL', {
         params: {
-          ACA VAN LOS PARAMETROS,
+          // ACA VAN LOS PARAMETROS,
           returnType: 'json',
         },
       
       }),
     {
      
-      onSuccess: (res) => {
+      onSuccess: (res:any) => {
        setRows(res)
       },
       onError: (error: string) => {
@@ -124,7 +130,10 @@ const AdminEmpleados = () => {
         data
       ),
     {
-      onSuccess: (r) => {
+      onSuccess: () => {
+        enqueueSnackbar('Correcto', {
+          variant: 'success',
+        });
         refetch()
       },
       onError: (error: string) => {
@@ -147,7 +156,7 @@ const AdminEmpleados = () => {
         height: "100vh",
         display: "grid",
         gridTemplateRows: "50px auto 50px",
-        backgroundColor: "rgb(242 234 225)",
+        backgroundColor: "#ffffff",
       }}
     >
       <Barra />
@@ -183,6 +192,7 @@ const AdminEmpleados = () => {
         sx={{width:'95%',marginLeft:'2.5%'}}
           columns={columnas}
           rows={rows}
+          getRowId={(row)=>row.empleado_id}
       
         />
       </div>
@@ -193,8 +203,8 @@ const AdminEmpleados = () => {
         onClose={() => {setOpenDialog(false);setSelected(null)}}
         open={openDialog}
       >
-        <div style={{ ...fullDiv, height: "85vh" }}>
-          <FormularioEmpleado selected={selected}/>
+        <div style={{ ...fullDiv, height: "75vh" }}>
+          <FormularioEmpleado selected={selected} setOpenDialog={setOpenDialog} refetch={refetch}/>
         </div>
       </Dialog>
       <Dialog
