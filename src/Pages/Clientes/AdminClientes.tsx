@@ -5,91 +5,89 @@ import { useState } from "react";
 import Footer from "../Footer";
 import { IconButton, Dialog, Button } from "@mui/material";
 import Mas from "../../Iconos/add.svg";
-import FormularioEmpleado from "./FormularioEmpleado";
-const AdminEmpleados = () => {
-  const handleEditar=(row:any)=>{
-    setSelected(row);
-    setOpenDialog(true)
-  }
-  const handleEliminar=(row:any)=>{
-    setSelected(row);
-    setOpenDialogEliminar(true)
-  }
-  const columnas = [
-    {
-      field: "actions",
-      type: "actions",
-      width: 60,
-      filterable: false,
-      sortable: false,
-      getActions: (params: { row: any }) => [
-        <GridActionsCellItem
-          label="Editar"
-           onClick={()=>handleEditar(params.row)}
-          showInMenu
-          // icon={getIcono(listaIconos.edit)}
-        />,
-        <GridActionsCellItem
-          label="Eliminar"
-          onClick={()=>handleEliminar(params.row)}
-          showInMenu
-          // icon={getIcono(listaIconos.close)}
-        />,
-      ],
-    },
-    {
-      field: "Nombre",
-      headerName: "Nombre",
-      width: 200,
-      editable: false,
-      sortable: true,
-    },
-    {
-      field: "Email",
-      headerName: "Email",
-      width: 300,
-      editable: false,
-      sortable: true,
-    },
-    {
-      field: "Edad",
-      headerName: "Edad",
-      width: 200,
-      editable: false,
-      sortable: true,
-    },
-    {
-      field: "Documento",
-      headerName: "Documento",
-      width: 140,
-      editable: false,
-      sortable: true,
-    },
-  ];
-  const [rows, setRows] = useState([
-    {
-      id: 0,
-      Nombre: "Juan",
-      Apellido:'Perez',
-      Email: "mailexample@gmail.com",
-      Telefono: "43213232",
-      Direccion:'aaaaaaaa',
-      Departamento:'ddddddddd', 
-    },
-    {
-      id: 1,
-      Nombre: "Pepe",
-      Apellido:'Rodriguez',
-      Email: "mailexample@gmail.com",
-      Telefono: "43213232",
-      Direccion:'aaaaaaaa',
-      Departamento:'ddddddddd',
-    },
-  ]);
+import FormularioCliente from "./FormularioCliente";
+const AdminClientes = () => {
+   const handleEditar=(row:any)=>{
+     setSelected(row);
+     setOpenDialog(true)
+   }
+   const handleEliminar=(row:any)=>{
+     setSelected(row);
+     setOpenDialogEliminar(true)
+   }
+   const columnas = [
+     {
+       field: "actions",
+       type: "actions",
+       width: 60,
+       filterable: false,
+       sortable: false,
+       getActions: (params: { row: any }) => [
+         <GridActionsCellItem
+           label="Editar"
+            onClick={()=>handleEditar(params.row)}
+           showInMenu
+         />,
+         <GridActionsCellItem
+           label="Eliminar"
+           onClick={()=>handleEliminar(params.row)}
+           showInMenu
+         />,
+       ],
+     },
+     {
+       field: "Nombre",
+       headerName: "Nombre",
+       width: 200,
+       editable: false,
+       sortable: true,
+     },
+     {
+       field: "Email",
+       headerName: "Email",
+       width: 300,
+       editable: false,
+       sortable: true,
+     },
+     {
+       field: "Edad",
+       headerName: "Edad",
+       width: 200,
+       editable: false,
+       sortable: true,
+     },
+     {
+       field: "Documento",
+       headerName: "Documento",
+       width: 140,
+       editable: false,
+       sortable: true,
+     },
+   ];
+   const [rows, setRows] = useState([
+     {
+       id: 0,
+       Nombre: "Juan",
+       Apellido:'Perez',
+       Email: "mailexample@gmail.com",
+       Telefono: "43213232",
+       Direccion:'aaaaaaaa',
+       Departamento:'ddddddddd', 
+     },
+     {
+       id: 1,
+       Nombre: "Pepe",
+       Apellido:'Rodriguez',
+       Email: "mailexample@gmail.com",
+       Telefono: "43213232",
+       Direccion:'aaaaaaaa',
+       Departamento:'ddddddddd',
+     },
+   ]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
+   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
 
-  const [selected,setSelected]=useState<any>(null)
+   const [selected,setSelected]=useState<any>(null)
   return (
     <div
       style={{
@@ -101,7 +99,7 @@ const AdminEmpleados = () => {
       }}
     >
       <Barra />
-      <div style={{ ...fullDiv, flexDirection: "column", justifyContent:'center' }}>
+       <div style={{ ...fullDiv, flexDirection: "column", justifyContent:'center' }}>
         <div
           style={{
             width: "100%",
@@ -112,7 +110,7 @@ const AdminEmpleados = () => {
           }}
         >
           <span style={{ marginLeft: "30px", fontWeight: "bold" }}>
-            Administración Empleados
+            Administración Clientes
           </span>
           <IconButton
             sx={{
@@ -129,14 +127,14 @@ const AdminEmpleados = () => {
             <img src={Mas} style={{ width: "25px", height: "25px" }} />
           </IconButton>
         </div>
-        <DataGrid
+      <DataGrid
         sx={{width:'95%',marginLeft:'2.5%'}}
           columns={columnas}
           rows={rows}
       
-        />
+        /> 
       </div>
-      <Footer />
+     <Footer />
       <Dialog
         fullWidth
         maxWidth={"xs"}
@@ -144,10 +142,10 @@ const AdminEmpleados = () => {
         open={openDialog}
       >
         <div style={{ ...fullDiv, height: "85vh" }}>
-          <FormularioEmpleado selected={selected}/>
+         <FormularioCliente selected={selected}/> 
         </div>
       </Dialog>
-      <Dialog
+       <Dialog
         fullWidth
         maxWidth={"xs"}
         onClose={() => {setOpenDialogEliminar(false);setSelected(null)}}
@@ -162,8 +160,8 @@ const AdminEmpleados = () => {
 
          </div>
         </div>
-      </Dialog>
+      </Dialog> 
     </div>
   );
 };
-export default AdminEmpleados;
+export default AdminClientes;

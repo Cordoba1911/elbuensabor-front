@@ -4,7 +4,7 @@ import DialogTitle, { DialogFooter } from "../General/DialogTitle";
 import { IconButton, TextField, Menu, MenuItem } from "@mui/material";
 import { useQuery } from "react-query";
 
-const FormularioEmpleado = ({selected}:{selected:any}) => {
+const FormularioCliente = ({selected}:{selected:any}) => {
   const[input,setInput]=useState({
     Nombre:'',
     Apellido:'',
@@ -46,4 +46,4 @@ const FormularioEmpleado = ({selected}:{selected:any}) => {
     </div>
   );
 };
-export default FormularioEmpleado;
+export default FormularioCliente;

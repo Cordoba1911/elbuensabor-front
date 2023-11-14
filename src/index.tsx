@@ -1,11 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import App from "./App";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import MainPage from "./Pages/MainPage";
 import AdminEmpleados from "./Pages/Empleados/AdminEmpleados";
+import AdminClientes from "./Pages/Clientes/AdminClientes";
+import AdminRubros from "./Pages/Rubros/AdminRubros";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -19,6 +22,14 @@ const router = createBrowserRouter([
     path: "/AdminEmpleados",
     element: <AdminEmpleados />,
   },
+   {
+     path: "/AdminClientes",
+     element: <AdminClientes />,
+   },
+   {
+     path: "/AdminRubros",
+     element: <AdminRubros />,
+   },
 ]);
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

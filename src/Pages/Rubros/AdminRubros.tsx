@@ -5,8 +5,8 @@ import { useState } from "react";
 import Footer from "../Footer";
 import { IconButton, Dialog, Button } from "@mui/material";
 import Mas from "../../Iconos/add.svg";
-import FormularioEmpleado from "./FormularioEmpleado";
-const AdminEmpleados = () => {
+import FormularioRubros from "./FormularioRubros";
+const AdminRubro = () => {
   const handleEditar=(row:any)=>{
     setSelected(row);
     setOpenDialog(true)
@@ -144,7 +144,7 @@ const AdminEmpleados = () => {
         open={openDialog}
       >
         <div style={{ ...fullDiv, height: "85vh" }}>
-          <FormularioEmpleado selected={selected}/>
+          <FormularioRubros selected={selected}/>
         </div>
       </Dialog>
       <Dialog
@@ -154,7 +154,7 @@ const AdminEmpleados = () => {
         open={openDialogEliminar}
       >
         <div style={{ ...fullDiv,width:'calc(100% - 60px)',flexDirection:'column', height: "15vh",padding:'30px',fontSize:'20px',fontWeight:'bold' }}>
-         ¿Desea eliminar el Empleado {selected?.Apellido}, {selected?.Nombre}?
+         ¿Desea eliminar el Rubro {selected?.Apellido}, {selected?.Nombre}?
          <div style={{width:'100%', height:'60px',display:'flex', marginTop:'auto',alignItems:'center',justifyContent:'space-between'}}>
           <Button sx={{backgroundColor:'darkblue',marginLeft:'auto',color:'white','&:hover':{
             backgroundColor:'darkblue',color:'white'
@@ -166,4 +166,4 @@ const AdminEmpleados = () => {
     </div>
   );
 };
-export default AdminEmpleados;
+export default AdminRubro;
