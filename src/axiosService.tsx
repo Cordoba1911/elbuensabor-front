@@ -1,14 +1,14 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
 const customAxiosInstance = axios.create({
-  baseURL: ACA SE PONE LA URL BASE,
+  baseURL: 'ACA SE PONE LA URL BASE',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 customAxiosInstance.interceptors.request.use(
-  (axiosConfigRequest: AxiosRequestConfig) => {
+  (axiosConfigRequest: AxiosRequestConfig):any => {
     return axiosConfigRequest;
   }
 );

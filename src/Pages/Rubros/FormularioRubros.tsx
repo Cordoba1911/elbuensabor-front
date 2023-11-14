@@ -2,18 +2,14 @@ import { useEffect, useState } from "react";
 import { fullDiv } from "../../App";
 import DialogTitle, { DialogFooter } from "../General/DialogTitle";
 import { IconButton, TextField, Menu, MenuItem } from "@mui/material";
-import { useQuery } from "react-query";
+import { useSnackbar } from "notistack";
+import { useMutation } from "@tanstack/react-query";
+import { customAxiosInstance } from "../../axiosService";
 
-const FormularioRubros = ({selected}:{selected:any}) => {
+const FormularioRubros = ({selected,setOpenDialog,refetch}:{selected:any,setOpenDialog:any,refetch:any}) => {
   const[input,setInput]=useState({
-    Nombre:'',
-    Apellido:'',
-    Direccion:'',
-    Departamento:'',
-    Telefono:'',
-    Email:'',
-    Contraseña:'',
-    RepetirContraseña:''
+    Denominacion:'',
+  
   })
   useEffect(()=>{
     if(selected!==null){
@@ -24,23 +20,45 @@ const FormularioRubros = ({selected}:{selected:any}) => {
     setInput((prev)=>({...prev,[atributo]:e.target.value}))
   }
  
- 
+  const {enqueueSnackbar}=useSnackbar()
+  const mutationGuardar = useMutation(
+    //!ESTA DATA ES EL ID
+    (data: any) =>
+      customAxiosInstance.post(
+       'ACA LA URL ELIIMNAR',
+        data
+      ),
+    {
+      onSuccess: (data) => {
+        enqueueSnackbar('Correcto', {
+          variant: 'success',
+        });
+        setOpenDialog()
+        refetch()
+      },
+      onError: (error: string) => {
+        enqueueSnackbar(error, {
+          variant: 'error',
+        });
+      },
+    }
+    )
+       
+  const handleGuardar=()=>{
+    mutationGuardar.mutate(
+      input//ESTO SE VE
+    )
+  }
   return (
     <div style={{ ...fullDiv, flexDirection: "column" }}>
-      <DialogTitle title={"Empleados"} />
+      <DialogTitle title={"Rubros"} />
       <div
-        style={{ ...fullDiv,width:'calc(100% - 40px)', display: "grid", gridTemplateRows:'repeat(9,calc(100% / 9))',
+        style={{ ...fullDiv,width:'calc(100% - 40px)', display: "grid", gridTemplateRows:'repeat(1,calc(100% / 1))',
         alignItems:'center',paddingLeft:'20px',paddingRight:'20px' }}
       >
-        <TextField label={'Nombre'} value={input.Nombre} onChange={(e)=>changeValue(e,'Nombre')} error={!input.Nombre}/>
-        <TextField label={'Apellido'} value={input.Apellido} onChange={(e)=>changeValue(e,'Apellido')}  error={!input.Apellido}/>
-        <TextField label={'Direccion'} value={input.Direccion} onChange={(e)=>changeValue(e,'Direccion')}  error={!input.Direccion}/>
-        <TextField label={'Departamento'} value={input.Departamento} onChange={(e)=>changeValue(e,'Departamento')}  error={!input.Departamento}/>
-        <TextField label={'Telefono'} value={input.Telefono} onChange={(e)=>changeValue(e,'Telefono')}  error={!input.Telefono}/>
-        <TextField label={'Email'} value={input.Email} onChange={(e)=>changeValue(e,'Email')}  error={!input.Email}/>
-        <TextField label={'Contraseña'} value={input.Contraseña} type={"password"} onChange={(e)=>changeValue(e,'Contraseña')}  error={!input.Contraseña}/>
-        <TextField label={'Repetir Contraseña'} value={input.RepetirContraseña} type={"password"} onChange={(e)=>changeValue(e,'RepetirContraseña')}  error={!input.RepetirContraseña||input.Contraseña!==input.RepetirContraseña}/>
-        <TextField label={'Rol'}/>
+      
+        <TextField label={'Denominacion'} value={input.Denominacion} onChange={(e)=>changeValue(e,'Denominacion')}  error={!input.Denominacion}/>
+        
       </div>
       <DialogFooter func={() => {}} />
     </div>

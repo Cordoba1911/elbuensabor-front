@@ -1,7 +1,7 @@
 import { fullDiv } from "../../App";
 import { Button } from "@mui/material";
 
-export const DialogFooter = ({ func }: { func: any }) => {
+export const DialogFooter = ({ func,disabled=false }: { func: any,disabled?:any }) => {
   return (
     <div
       style={{
@@ -11,6 +11,7 @@ export const DialogFooter = ({ func }: { func: any }) => {
       }}
     >
       <Button
+      disabled={disabled}
         sx={{
           "&:hover": { color: "white", backgroundColor: "darkblue" },
           color: "white",

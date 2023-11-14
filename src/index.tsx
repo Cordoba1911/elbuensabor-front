@@ -8,6 +8,7 @@ import MainPage from "./Pages/MainPage";
 import AdminEmpleados from "./Pages/Empleados/AdminEmpleados";
 import AdminClientes from "./Pages/Clientes/AdminClientes";
 import AdminRubros from "./Pages/Rubros/AdminRubros";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const router = createBrowserRouter([
   {
@@ -34,9 +35,12 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+const queryClient = new QueryClient()
+
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} /></QueryClientProvider>
   </React.StrictMode>
 );
 
