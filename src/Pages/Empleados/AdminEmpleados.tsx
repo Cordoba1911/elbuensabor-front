@@ -6,6 +6,9 @@ import Footer from "../Footer";
 import { IconButton, Dialog, Button } from "@mui/material";
 import Mas from "../../Iconos/add.svg";
 import FormularioEmpleado from "./FormularioEmpleado";
+import { useQuery,useMutation } from "@tanstack/react-query";
+import { customAxiosInstance } from "../../axiosService";
+import { useSnackbar } from "notistack";
 const AdminEmpleados = () => {
   const handleEditar=(row:any)=>{
     setSelected(row);
@@ -88,8 +91,55 @@ const AdminEmpleados = () => {
   ]);
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
-
+  const { enqueueSnackbar } = useSnackbar();
   const [selected,setSelected]=useState<any>(null)
+  //! ESTO HACE EL GET DE LAS FILAS Y LO SETEA EN EL ESTADO GETROWS PARA MOSTRARLO EN LA TABLA
+  const {refetch}=useQuery(
+    ['getAdminEMpleados'],
+    () =>
+      customAxiosInstance.get('ACA VA LA URL', {
+        params: {
+          ACA VAN LOS PARAMETROS,
+          returnType: 'json',
+        },
+      
+      }),
+    {
+     
+      onSuccess: (res) => {
+       setRows(res)
+      },
+      onError: (error: string) => {
+        enqueueSnackbar(error, {
+          variant: 'error',
+        });
+      },
+    }
+  );
+  const mutationEliminarFila = useMutation(
+    //!ESTA DATA ES EL ID
+    (data: any) =>
+      customAxiosInstance.post(
+       'ACA LA URL ELIIMNAR',
+        data
+      ),
+    {
+      onSuccess: (r) => {
+        refetch()
+      },
+      onError: (error: string) => {
+        enqueueSnackbar(error, {
+          variant: 'error',
+        });
+      },
+    }
+    )
+       
+  const handleEliminarFila=()=>{
+    mutationEliminarFila.mutate(
+      selected.id
+    )
+  }
   return (
     <div
       style={{
@@ -156,7 +206,7 @@ const AdminEmpleados = () => {
         <div style={{ ...fullDiv,width:'calc(100% - 60px)',flexDirection:'column', height: "15vh",padding:'30px',fontSize:'20px',fontWeight:'bold' }}>
          ¿Desea eliminar el Empleado {selected?.Apellido}, {selected?.Nombre}?
          <div style={{width:'100%', height:'60px',display:'flex', marginTop:'auto',alignItems:'center',justifyContent:'space-between'}}>
-          <Button sx={{backgroundColor:'darkblue',marginLeft:'auto',color:'white','&:hover':{
+          <Button onClick={handleEliminarFila} sx={{backgroundColor:'darkblue',marginLeft:'auto',color:'white','&:hover':{
             backgroundColor:'darkblue',color:'white'
           }}}>Aceptar</Button>
 
