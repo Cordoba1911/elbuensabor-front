@@ -39,59 +39,37 @@ const AdminClientes = () => {
        ],
      },
      {
-       field: "Nombre",
+       field: "nombre",
        headerName: "Nombre",
        width: 200,
        editable: false,
        sortable: true,
      },
      {
-       field: "Apellido",
+       field: "apellido",
        headerName: "Apellido",
        width: 300,
        editable: false,
        sortable: true,
      },
      {
-       field: "Telefono",
+       field: "telefono",
        headerName: "Telefono",
        width: 200,
        editable: false,
        sortable: true,
      },
      {
-       field: "Email",
+       field: "email",
        headerName: "Email",
        width: 140,
        editable: false,
        sortable: true,
-     }, {
-      field: "Domicilio",
-      headerName: "Domicilio",
-      width: 140,
-      editable: false,
-      sortable: true,
-    },
+     }, 
+     
    ];
    const [rows, setRows] = useState([
-     {
-      cliente_id: 0,
-       Nombre: "Juan",
-       Apellido:'Perez',
-       Email: "mailexample@gmail.com",
-       Telefono: "43213232",
-       Direccion:'aaaaaaaa',
-       Departamento:'ddddddddd', 
-     },
-     {
-      cliente_id: 1,
-       Nombre: "Pepe",
-       Apellido:'Rodriguez',
-       Email: "mailexample@gmail.com",
-       Telefono: "43213232",
-       Direccion:'aaaaaaaa',
-       Departamento:'ddddddddd',
-     },
+     
    ]);
   const [openDialog, setOpenDialog] = useState(false);
    const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
@@ -101,17 +79,19 @@ const AdminClientes = () => {
    const {refetch}=useQuery(
     ['getAdminClientes'],
     () =>
-      customAxiosInstance.get('ACA VA LA URL', {
+      customAxiosInstance.get('api/v1/clientes/paged', {
         params: {
-          // ACA VAN LOS PARAMETROS,
-          returnType: 'json',
+          page:0,
+          size:5,
+          sort:'id,asc'
+
         },
       
       }),
     {
      
       onSuccess: (res:any) => {
-       setRows(res)
+        setRows(res.data.content)
       },
       onError: (error: string) => {
         enqueueSnackbar(error, {
@@ -125,15 +105,15 @@ const AdminClientes = () => {
   const mutationEliminarFila = useMutation(
     //!ESTA DATA ES EL ID
     (data: any) =>
-      customAxiosInstance.post(
-       'ACA LA URL ELIIMNAR',
-        data
+      customAxiosInstance.delete(
+        `/api/v1/clientes/${selected.id}`
       ),
     {
       onSuccess: () => {
         enqueueSnackbar('Correcto', {
           variant: 'success',
         });
+        setOpenDialogEliminar(false)
         refetch()
       },
       onError: (error: string) => {
@@ -195,7 +175,6 @@ const AdminClientes = () => {
         sx={{width:'95%',marginLeft:'2.5%'}}
           columns={columnas}
           rows={rows}
-          getRowId={(row)=>row.cliente_id}
       
         /> 
       </div>
@@ -217,9 +196,9 @@ const AdminClientes = () => {
         open={openDialogEliminar}
       >
         <div style={{ ...fullDiv,width:'calc(100% - 60px)',flexDirection:'column', height: "15vh",padding:'30px',fontSize:'20px',fontWeight:'bold' }}>
-         ¿Desea eliminar el Cliente {selected?.Apellido}, {selected?.Nombre}?
+         ¿Desea eliminar el Cliente {selected?.apellido}, {selected?.nombre}?
          <div style={{width:'100%', height:'60px',display:'flex', marginTop:'auto',alignItems:'center',justifyContent:'space-between'}}>
-          <Button sx={{backgroundColor:'darkblue',marginLeft:'auto',color:'white','&:hover':{
+          <Button onClick={handleEliminarFila} sx={{backgroundColor:'darkblue',marginLeft:'auto',color:'white','&:hover':{
             backgroundColor:'darkblue',color:'white'
           }}}>Aceptar</Button>
 

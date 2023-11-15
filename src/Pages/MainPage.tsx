@@ -36,7 +36,7 @@ const MainPage = () => {
         <div style={{width:'70%', height:'70%',display:'flex', }}>
         <Carousel  sx={{width:'100%', height:'100%'}}>
             {items.map( (item, i) => 
-            <Paper sx={{width:'100%', height:'54vh',display:'flex', backgroundColor:'green',borderRadius:'10px'}}>
+            <Paper sx={{width:'100%', height:'54vh',display:'flex',borderRadius:'10px'}}>
               <img src={item.path} style={{ width: "100%", height: "100%",borderRadius:'10px',boxShadow:'0px 5px 5px #00000050' }} />
 
             </Paper>)

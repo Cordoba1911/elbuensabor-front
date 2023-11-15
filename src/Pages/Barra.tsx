@@ -83,6 +83,9 @@ const Barra = () => {
         <MenuItem onClick={() => handleNavigate("/AdminRubros")}>
           Administracion Rubros
         </MenuItem>
+        <MenuItem onClick={() => handleNavigate("/AdminManufacturados")}>
+          Administracion Manufacturados
+        </MenuItem>
       </Menu>
     </div>
   );
