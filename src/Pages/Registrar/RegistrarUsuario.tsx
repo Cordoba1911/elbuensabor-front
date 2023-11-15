@@ -1,14 +1,14 @@
-import { Dialog, TextField } from "@mui/material";
+import { Dialog, TextField,Button } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
 import { Dispatch, ReactElement, SetStateAction, useState } from "react";
+import { customAxiosInstance } from "../../axiosService";
+
 interface IRegistrarUsuario {
-  Nombre: string;
-  Apellido: string;
-  Direccion: string;
-  Localidad: string;
-  Telefono: string;
-  Email: string;
-  Contraseña: string;
-  RepetirContraseña: string;
+  nombre: string;
+    apellido: string;
+    username: string;
+    password: string;
 }
 const RegistrarUsuario = ({
   openRegistrarUsuario,
@@ -18,21 +18,46 @@ const RegistrarUsuario = ({
   setOpenRegistrarUsuario: Dispatch<SetStateAction<boolean>>;
 }): ReactElement => {
   const [input, setInput] = useState<IRegistrarUsuario>({
-    Nombre: "",
-    Apellido: "",
-    Direccion: "",
-    Localidad: "",
-    Telefono: "",
-    Email: "",
-    Contraseña: "",
-    RepetirContraseña: "",
+    nombre: "",
+    apellido: "",
+    username: "",
+    password: "",
+    
+  
   });
   const stylesDefault = {
     width: "100%",
     height: "100%",
     display: "flex",
     alignItems: "center",
-  };
+  };  const {enqueueSnackbar}=useSnackbar()
+
+  const mutationAuth = useMutation(
+    
+    (data: any) =>
+      customAxiosInstance.post(
+       '/auth/register',
+       data
+      ),
+    {
+      onSuccess: (data) => {
+        const token=data.data.token
+        setOpenRegistrarUsuario(false)
+        window.localStorage.setItem('token',token)
+        customAxiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
+      },
+      onError: (error: string) => {
+        enqueueSnackbar(error, {
+          variant: 'error',
+        });
+      },
+    }
+    )
+  const handleRegister=()=>{
+    mutationAuth.mutate(
+      input//ESTO SE VE
+    )
+  }
   return (
     <Dialog
       fullWidth
@@ -45,8 +70,8 @@ const RegistrarUsuario = ({
           width: "calc(100% - 50px)",
           height: "90vh",
           display: "grid",
-          gridTemplateRows: "repeat(8,calc(12.5% - 9px))",
-          gridTemplateColumns: "50% 50%",
+          gridTemplateRows: "repeat(6,calc(calc(100% / 6) - 9px))",
+          gridTemplateColumns: "100%",
           rowGap: "10px",
           columnGap: "10px",
           padding: "20px",
@@ -72,11 +97,11 @@ const RegistrarUsuario = ({
           <TextField
             sx={{ width: "100%" }}
             label={"Nombre"}
-            value={input.Nombre}
-            onChange={(newValue): void =>
+            value={input.nombre}
+            onChange={(e): void =>
               setInput((prev): any => ({
                 ...prev,
-                Nombre: newValue,
+                nombre: e.target.value,
               }))
             }
           />
@@ -89,11 +114,11 @@ const RegistrarUsuario = ({
           <TextField
             sx={{ width: "100%" }}
             label={"Apellido"}
-            value={input.Apellido}
-            onChange={(newValue): void =>
+            value={input.apellido}
+            onChange={(e): void =>
               setInput((prev): any => ({
                 ...prev,
-                Apellido: newValue,
+                apellido: e.target.value,
               }))
             }
           />
@@ -105,12 +130,12 @@ const RegistrarUsuario = ({
         >
           <TextField
             sx={{ width: "100%" }}
-            label={"Direccion"}
-            value={input.Direccion}
-            onChange={(newValue): void =>
+            label={"Username"}
+            value={input.username}
+            onChange={(e): void =>
               setInput((prev): any => ({
                 ...prev,
-                Direccion: newValue,
+                username: e.target.value,
               }))
             }
           />
@@ -122,102 +147,17 @@ const RegistrarUsuario = ({
         >
           <TextField
             sx={{ width: "100%" }}
-            label={"Localidad"}
-            value={input.Localidad}
-            onChange={(newValue): void =>
+            label={"Password"}
+            value={input.password}
+            onChange={(e): void =>
               setInput((prev): any => ({
                 ...prev,
-                Localidad: newValue,
+                password: e.target.value,
               }))
             }
           />
         </div>
-        <div
-          style={{
-            ...stylesDefault,
-          }}
-        >
-          <TextField
-            sx={{ width: "100%" }}
-            label={"Telefono"}
-            value={input.Telefono}
-            onChange={(newValue): void =>
-              setInput((prev): any => ({
-                ...prev,
-                Telefono: newValue,
-              }))
-            }
-          />
-        </div>
-        <div
-          style={{
-            ...stylesDefault,
-          }}
-        >
-          <TextField
-            sx={{ width: "100%" }}
-            label={"Email"}
-            value={input.Email}
-            onChange={(newValue): void =>
-              setInput((prev): any => ({
-                ...prev,
-                Email: newValue,
-              }))
-            }
-          />
-        </div>
-        <div
-          style={{
-            ...stylesDefault,
-            gridColumn: "1/-1",
-          }}
-        >
-          <TextField
-            sx={{ width: "100%" }}
-            label={"Contraseña"}
-            value={input.Contraseña}
-            onChange={(newValue): void =>
-              setInput((prev): any => ({
-                ...prev,
-                Contraseña: newValue,
-              }))
-            }
-          />
-        </div>{" "}
-        <div
-          style={{
-            ...stylesDefault,
-            gridColumn: "1/-1",
-          }}
-        >
-          <TextField
-            sx={{ width: "100%" }}
-            label={"Repetir Contraseña"}
-            value={input.RepetirContraseña}
-            onChange={(newValue): void =>
-              setInput((prev): any => ({
-                ...prev,
-                RepetirContraseña: newValue,
-              }))
-            }
-          />
-        </div>
-        <div
-          style={{
-            ...stylesDefault,
-            gridColumn: "1/-1",
-          }}
-        >
-          googel
-        </div>{" "}
-        <div
-          style={{
-            ...stylesDefault,
-            gridColumn: "1/-1",
-          }}
-        >
-          botones
-        </div>
+        <Button onClick={()=>handleRegister()}>Registrarse</Button>
       </div>
     </Dialog>
   );

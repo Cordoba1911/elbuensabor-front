@@ -12,19 +12,55 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import RegistrarUsuario from "./Registrar/RegistrarUsuario";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { customAxiosInstance } from "../axiosService";
+import { useSnackbar } from "notistack";
 interface IUser {
   username: string;
   password: string;
+  // nombre:string,
+  // apellido:string,
 }
 const Login = (): ReactElement => {
   const navigate = useNavigate();
   const [user, setUser] = useState<IUser>({
     username: "",
     password: "",
+    // nombre:"",
+    // apellido:"",
   });
+  const {enqueueSnackbar}=useSnackbar()
+
   const [seePassword, setSeePassword] = useState<boolean>(false);
   const [openRegistrarUsuario, setOpenRegistrarUsuario] =
     useState<boolean>(false);
+    const mutationAuth = useMutation(
+    
+      (data: any) =>
+        customAxiosInstance.post(
+         '/auth/login',
+         data
+        ),
+      {
+        onSuccess: (data) => {
+          const token=data.data.token
+          window.localStorage.setItem('token',token)
+          customAxiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
+          handleNavigate()
+        },
+        onError: (error: string) => {
+          enqueueSnackbar(error, {
+            variant: 'error',
+          });
+        },
+      }
+      )
+         
+    const handleAuth=()=>{
+      mutationAuth.mutate(
+        user//ESTO SE VE
+      )
+    }
   const handleNavigate = () => {
     navigate("/MainPage");
   };
@@ -69,7 +105,8 @@ const Login = (): ReactElement => {
         >
           <TextField
             sx={{ width: "80%" }}
-            label="Usuario"
+            label="Usuario" 
+            error={!user.username}
             value={user.username}
             onChange={(e) =>
               setUser((prev) => ({ ...prev, username: e.target.value }))
@@ -86,7 +123,8 @@ const Login = (): ReactElement => {
             value={user.password}
             onChange={(e) =>
               setUser((prev) => ({ ...prev, password: e.target.value }))
-            }
+            }  
+            error={!user.password}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="start">
@@ -154,7 +192,8 @@ const Login = (): ReactElement => {
             }}
           >
             <Button
-              onClick={handleNavigate}
+              disabled={!user.password||!user.username}
+              onClick={handleAuth}
               sx={{
                 height: "40%",
                 width: "60%",
