@@ -12,16 +12,17 @@ interface IRegistrarUsuario {
 }
 const RegistrarUsuario = ({
   openRegistrarUsuario,
-  setOpenRegistrarUsuario,
+  setOpenRegistrarUsuario,from
 }: {
   openRegistrarUsuario: boolean;
-  setOpenRegistrarUsuario: Dispatch<SetStateAction<boolean>>;
+  setOpenRegistrarUsuario: Dispatch<SetStateAction<boolean>>;from:string
 }): ReactElement => {
-  const [input, setInput] = useState<IRegistrarUsuario>({
+  const [input, setInput] = useState({
     nombre: "",
     apellido: "",
     username: "",
     password: "",
+    rol:from
     
   
   });
