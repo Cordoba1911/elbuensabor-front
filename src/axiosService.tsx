@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
+const baseUrl='http://localhost:9000/'
 const customAxiosInstance = axios.create({
-  baseURL: 'ACA SE PONE LA URL BASE',
+  baseURL: baseUrl,
   headers: {
     'Content-Type': 'application/json',
   },

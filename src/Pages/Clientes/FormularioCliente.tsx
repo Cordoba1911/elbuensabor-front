@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { fullDiv } from "../../App";
 import DialogTitle, { DialogFooter } from "../General/DialogTitle";
-import { IconButton, TextField, Menu, MenuItem } from "@mui/material";
+import { IconButton, TextField, Menu, MenuItem, Button } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { customAxiosInstance } from "../../axiosService";
 import { useSnackbar } from "notistack";
 
 const FormularioCliente = ({selected,setOpenDialog,refetch}:{selected:any,setOpenDialog:any,refetch:any}) => {
   const[input,setInput]=useState({
-    Nombre:'',
-    Apellido:'',
-    Direccion:'',
-    Telefono:'',
-    Email:'',
+    nombre:'',
+    apellido:'',
+  
+    telefono:'',
+    email:'',
+    rol:'CLIENTE'
   })
   useEffect(()=>{
     if(selected!==null){
@@ -28,8 +29,8 @@ const FormularioCliente = ({selected,setOpenDialog,refetch}:{selected:any,setOpe
     //!ESTA DATA ES EL ID
     (data: any) =>
       customAxiosInstance.post(
-       'ACA LA URL ELIIMNAR',
-        data
+        '/api/v1/clientes',
+       data,
       ),
     {
       onSuccess: (data) => {
@@ -60,13 +61,12 @@ const FormularioCliente = ({selected,setOpenDialog,refetch}:{selected:any,setOpe
         style={{ ...fullDiv,width:'calc(100% - 40px)', display: "grid", gridTemplateRows:'repeat(5,calc(100% / 5))',
         alignItems:'center',paddingLeft:'20px',paddingRight:'20px' }}
       >
-        <TextField label={'Nombre'} value={input.Nombre} onChange={(e)=>changeValue(e,'Nombre')} error={!input.Nombre}/>
-        <TextField label={'Apellido'} value={input.Apellido} onChange={(e)=>changeValue(e,'Apellido')}  error={!input.Apellido}/>
-        <TextField label={'Direccion'} value={input.Direccion} onChange={(e)=>changeValue(e,'Direccion')}  error={!input.Direccion}/>
-        <TextField label={'Telefono'} value={input.Telefono} onChange={(e)=>changeValue(e,'Telefono')}  error={!input.Telefono}/>
-        <TextField label={'Email'} value={input.Email} onChange={(e)=>changeValue(e,'Email')}  error={!input.Email}/>
+        <TextField label={'Nombre'} value={input.nombre} onChange={(e)=>changeValue(e,'nombre')} error={!input.nombre}/>
+        <TextField label={'Apellido'} value={input.apellido} onChange={(e)=>changeValue(e,'apellido')}  error={!input.apellido}/>
+        <TextField label={'Telefono'} value={input.telefono} onChange={(e)=>changeValue(e,'telefono')}  error={!input.telefono}/>
+        <TextField label={'Email'} value={input.email} onChange={(e)=>changeValue(e,'email')}  error={!input.email}/>
       </div>
-      <DialogFooter func={() => {}} />
+      <Button onClick={()=>handleGuardar()}>Guardar</Button>
     </div>
   );
 };

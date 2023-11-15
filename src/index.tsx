@@ -9,6 +9,7 @@ import AdminEmpleados from "./Pages/Empleados/AdminEmpleados";
 import AdminClientes from "./Pages/Clientes/AdminClientes";
 import AdminRubros from "./Pages/Rubros/AdminRubros";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import AdminManufacturado from "./Pages/Manufacturados/AdminManufacturados";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,10 @@ const router = createBrowserRouter([
    {
      path: "/AdminRubros",
      element: <AdminRubros />,
-   },
+   },{
+    path: "/AdminManufacturados",
+    element: <AdminManufacturado />,
+  },
 ]);
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

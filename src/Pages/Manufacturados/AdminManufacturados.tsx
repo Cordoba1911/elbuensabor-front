@@ -5,11 +5,11 @@ import { useState } from "react";
 import Footer from "../Footer";
 import { IconButton, Dialog, Button } from "@mui/material";
 import Mas from "../../Iconos/add.svg";
-import FormularioEmpleado from "./FormularioEmpleado";
+import FormularioManufacturado from "./FormularioManufacturado";
 import { useQuery,useMutation } from "@tanstack/react-query";
 import { customAxiosInstance } from "../../axiosService";
 import { useSnackbar } from "notistack";
-const AdminEmpleados = () => {
+const AdminManufacturado = () => {
   const handleEditar=(row:any)=>{
     setSelected(row);
     setOpenDialog(true)
@@ -39,37 +39,38 @@ const AdminEmpleados = () => {
           // icon={getIcono(listaIconos.close)}
         />,
       ],
-    },
+     },
+    
     {
-      field: "nombre",
-      headerName: "Nombre",
+      field: "denominacion",
+      headerName: "Denominacion",
       width: 200,
       editable: false,
       sortable: true,
     },
     {
-      field: "apellido",
-      headerName: "Apellido",
+      field: "precioVenta",
+      headerName: "Precio de Venta",
       width: 300,
       editable: false,
       sortable: true,
     },
     {
-      field: "telefono",
-      headerName: "Telefono",
+      field: "tiempoEstimadoCocina",
+      headerName: "Tiempo Estimado de Cocina",
       width: 200,
       editable: false,
       sortable: true,
     },
     {
-      field: "dni",
-      headerName: "dni",
+      field: "costo",
+      headerName: "costo",
       width: 140,
       editable: false,
       sortable: true,
     }, {
-      field: "rolEmpleado",
-      headerName: "Rol",
+      field: "receta",
+      headerName: "Receta",
       width: 140,
       editable: false,
       sortable: true,
@@ -84,7 +85,7 @@ const AdminEmpleados = () => {
   const {refetch}=useQuery(
     ['getAdminEMpleados'],
     () =>
-      customAxiosInstance.get('api/v1/empleados/paged', {
+      customAxiosInstance.get('api/v1/articuloManufacturados/paged', {
         params: {
           page:0,
           size:5,
@@ -109,7 +110,7 @@ const AdminEmpleados = () => {
     //!ESTA DATA ES EL ID
     (data: any) =>
       customAxiosInstance.delete(
-      `/api/v1/empleados/${selected.id}`
+      `/api/v1/articuloManufacturados/${selected.id}`
        
       ),
     {
@@ -155,7 +156,7 @@ const AdminEmpleados = () => {
           }}
         >
           <span style={{ marginLeft: "30px", fontWeight: "bold" }}>
-            Administración Empleados
+            Administración Articulo Manufacturado
           </span>
           <IconButton
             sx={{
@@ -188,7 +189,7 @@ const AdminEmpleados = () => {
         open={openDialog}
       >
         <div style={{ ...fullDiv, height: "75vh" }}>
-          <FormularioEmpleado selected={selected} setOpenDialog={setOpenDialog} refetch={refetch}/>
+          <FormularioManufacturado selected={selected} setOpenDialog={setOpenDialog} refetch={refetch}/>
         </div>
       </Dialog>
       <Dialog
@@ -198,7 +199,7 @@ const AdminEmpleados = () => {
         open={openDialogEliminar}
       >
         <div style={{ ...fullDiv,width:'calc(100% - 60px)',flexDirection:'column', height: "15vh",padding:'30px',fontSize:'20px',fontWeight:'bold' }}>
-         ¿Desea eliminar el Empleado {selected?.apellido}, {selected?.nombre}?
+         ¿Desea eliminar el Articulo Manufacturado {selected?.denominacion}?
          <div style={{width:'100%', height:'60px',display:'flex', marginTop:'auto',alignItems:'center',justifyContent:'space-between'}}>
           <Button onClick={handleEliminarFila} sx={{backgroundColor:'darkblue',marginLeft:'auto',color:'white','&:hover':{
             backgroundColor:'darkblue',color:'white'
@@ -210,4 +211,4 @@ const AdminEmpleados = () => {
     </div>
   );
 };
-export default AdminEmpleados;
+export default AdminManufacturado;

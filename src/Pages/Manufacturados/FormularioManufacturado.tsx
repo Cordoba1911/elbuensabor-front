@@ -6,13 +6,13 @@ import { useMutation } from "@tanstack/react-query";
 import { customAxiosInstance } from "../../axiosService";
 import { useSnackbar } from "notistack";
 
-const FormularioEmpleado = ({selected,setOpenDialog,refetch}:{selected:any,setOpenDialog:any,refetch:any}) => {
+const FormularioManufacturado = ({selected,setOpenDialog,refetch}:{selected:any,setOpenDialog:any,refetch:any}) => {
   const[input,setInput]=useState({
-    nombre:'',
-    apellido:'',
-    telefono:'',
-    dni:'',
-    rol:'EMPLEADO',
+    denominacion:'',
+    precioVenta:'',
+    tiempoEstimadoCocina:'',
+    costo:'',
+    receta:'',
    
   })
  
@@ -29,8 +29,11 @@ const FormularioEmpleado = ({selected,setOpenDialog,refetch}:{selected:any,setOp
     
     (data: any) =>
       customAxiosInstance.post(
-       '/api/v1/empleados',
-       { ...data,dni:parseInt(data.dni)}
+       '/api/v1/articuloManufacturados',
+       { ...data,
+        precioVenta:parseInt(data.precioVenta),
+        tiempoEstimadoCocina:parseInt(data.tiempoEstimadoCocina),
+        costo:parseInt(data.costo),}
       ),
     {
       onSuccess: (data) => {
@@ -60,14 +63,14 @@ const FormularioEmpleado = ({selected,setOpenDialog,refetch}:{selected:any,setOp
         style={{ ...fullDiv,width:'calc(100% - 40px)', display: "grid", gridTemplateRows:'repeat(7,calc(100% / 7))',
         alignItems:'center',paddingLeft:'20px',paddingRight:'20px' }}
       >
-        <TextField label={'Nombre'} value={input.nombre} onChange={(e)=>changeValue(e,'nombre')} error={!input.nombre}/>
-        <TextField label={'Apellido'} value={input.apellido} onChange={(e)=>changeValue(e,'apellido')}  error={!input.apellido}/>
-        <TextField label={'Telefono'} value={input.telefono} onChange={(e)=>changeValue(e,'telefono')}  error={!input.telefono}/>
-        <TextField label={'Dni'} value={input.dni} onChange={(e)=>changeValue(e,'dni')}  error={!input.dni}/>
-        <TextField label={'Rol'} value={input.rol} disabled/>
+        <TextField label={'Denominacion'} value={input.denominacion} onChange={(e)=>changeValue(e,'denominacion')} error={!input.denominacion}/>
+        <TextField label={'Precio de Venta'} value={input.precioVenta} onChange={(e)=>changeValue(e,'precioVenta')}  error={!input.precioVenta}/>
+        <TextField label={'Tiempo Estimado de Cocina'} value={input.tiempoEstimadoCocina} onChange={(e)=>changeValue(e,'tiempoEstimadoCocina')}  error={!input.tiempoEstimadoCocina}/>
+        <TextField label={'Costo'} value={input.costo} onChange={(e)=>changeValue(e,'costo')}  error={!input.costo}/>
+        <TextField label={'Receta'} value={input.receta} onChange={(e)=>changeValue(e,'receta')}  error={!input.receta}/>
       </div>
       <Button onClick={()=>handleGuardar()}>Guardar</Button>
     </div>
   );
 };
-export default FormularioEmpleado;
+export default FormularioManufacturado;

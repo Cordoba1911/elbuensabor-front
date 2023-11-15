@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { fullDiv } from "../../App";
 import DialogTitle, { DialogFooter } from "../General/DialogTitle";
-import { IconButton, TextField, Menu, MenuItem } from "@mui/material";
+import { IconButton, TextField, Menu, MenuItem, Button } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useMutation } from "@tanstack/react-query";
 import { customAxiosInstance } from "../../axiosService";
 
 const FormularioRubros = ({selected,setOpenDialog,refetch}:{selected:any,setOpenDialog:any,refetch:any}) => {
   const[input,setInput]=useState({
-    Denominacion:'',
+    denominacion:'',
   
   })
   useEffect(()=>{
@@ -25,7 +25,7 @@ const FormularioRubros = ({selected,setOpenDialog,refetch}:{selected:any,setOpen
     //!ESTA DATA ES EL ID
     (data: any) =>
       customAxiosInstance.post(
-       'ACA LA URL ELIIMNAR',
+        '/api/v1/rubros',
         data
       ),
     {
@@ -57,10 +57,10 @@ const FormularioRubros = ({selected,setOpenDialog,refetch}:{selected:any,setOpen
         alignItems:'center',paddingLeft:'20px',paddingRight:'20px' }}
       >
       
-        <TextField label={'Denominacion'} value={input.Denominacion} onChange={(e)=>changeValue(e,'Denominacion')}  error={!input.Denominacion}/>
+        <TextField label={'Denominacion'} value={input.denominacion} onChange={(e)=>changeValue(e,'denominacion')}  error={!input.denominacion}/>
         
       </div>
-      <DialogFooter func={() => {}} />
+      <Button onClick={()=>handleGuardar()}>Guardar</Button>
     </div>
   );
 };

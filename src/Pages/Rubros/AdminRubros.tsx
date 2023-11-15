@@ -41,7 +41,7 @@ const AdminRubro = () => {
       ],
     },
     {
-      field: "Denominacion",
+      field: "denominacion",
       headerName: "Denominacion",
       width: 200,
       editable: false,
@@ -50,16 +50,7 @@ const AdminRubro = () => {
     
   ];
   const [rows, setRows] = useState([
-    {
-      id: 0,
-      Denominacion: "Panificados",
    
-    },
-    {
-      id: 1,
-      Denominacion: "Carnes",
-    
-    },
   ]);
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
@@ -70,17 +61,19 @@ const AdminRubro = () => {
   const {refetch}=useQuery(
     ['getAdminRubros'],
     () =>
-      customAxiosInstance.get('ACA VA LA URL', {
-        params: {
-          // ACA VAN LOS PARAMETROS,
-          returnType: 'json',
-        },
-      
-      }),
+    customAxiosInstance.get('api/v1/rubros/paged', {
+      params: {
+        page:0,
+        size:5,
+        sort:'id,asc'
+
+      },
+    
+    }),
     {
      
       onSuccess: (res:any) => {
-       setRows(res)
+        setRows(res.data.content)
       },
       onError: (error: string) => {
         enqueueSnackbar(error, {
@@ -92,15 +85,15 @@ const AdminRubro = () => {
   const mutationEliminarFila = useMutation(
     //!ESTA DATA ES EL ID
     (data: any) =>
-      customAxiosInstance.post(
-       'ACA LA URL ELIIMNAR',
-        data
+      customAxiosInstance.delete(
+        `/api/v1/rubros/${selected.id}`
       ),
     {
       onSuccess: () => {
         enqueueSnackbar('Correcto', {
           variant: 'success',
-        });
+        }); 
+        setOpenDialogEliminar(false);
         refetch()
       },
       onError: (error: string) => {
@@ -180,9 +173,9 @@ const AdminRubro = () => {
         open={openDialogEliminar}
       >
         <div style={{ ...fullDiv,width:'calc(100% - 60px)',flexDirection:'column', height: "15vh",padding:'30px',fontSize:'20px',fontWeight:'bold' }}>
-         ¿Desea eliminar el Rubro {selected?.Denominacion}?
+         ¿Desea eliminar el Rubro {selected?.denominacion}?
          <div style={{width:'100%', height:'60px',display:'flex', marginTop:'auto',alignItems:'center',justifyContent:'space-between'}}>
-          <Button sx={{backgroundColor:'darkblue',marginLeft:'auto',color:'white','&:hover':{
+          <Button onClick={handleEliminarFila} sx={{backgroundColor:'darkblue',marginLeft:'auto',color:'white','&:hover':{
             backgroundColor:'darkblue',color:'white'
           }}}>Aceptar</Button>
 
