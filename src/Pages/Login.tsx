@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import fondo from "../Componentes/Imagenes/fondo.jpg";
 import logo from "../Componentes/Imagenes/logotipo.png";
 import {
@@ -30,6 +30,12 @@ const Login = (): ReactElement => {
     // apellido:"",
   });
   const {enqueueSnackbar}=useSnackbar()
+const from = window.localStorage.getItem('from')
+useEffect(()=>{
+if(from==='Register'){
+  setOpenRegistrarUsuario(true)
+}
+},[from])
 
   const [seePassword, setSeePassword] = useState<boolean>(false);
   const [openRegistrarUsuario, setOpenRegistrarUsuario] =
@@ -45,7 +51,7 @@ const Login = (): ReactElement => {
         onSuccess: (data) => {
           const token=data.data.token
           window.localStorage.setItem('token',token)
-          customAxiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
+          // customAxiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
           handleNavigate()
         },
         onError: (error: string) => {
@@ -62,13 +68,13 @@ const Login = (): ReactElement => {
       )
     }
   const handleNavigate = () => {
-    navigate("/MainPage");
+    navigate("/");
   };
   return (
     <div
       style={{
         width: "100%",
-        height: "100%",
+        height: "100vh",
         display: "flex",
         backgroundImage: `url(${fondo})`,
         backgroundRepeat: "no-repeat",

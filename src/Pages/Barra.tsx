@@ -1,5 +1,5 @@
 import Logo from "../Iconos/Logo.svg";
-import { IconButton, TextField, Menu, MenuItem } from "@mui/material";
+import { IconButton, TextField, Menu, MenuItem ,Button} from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import MenuH from "../Iconos/menu.svg";
 import { MouseEvent, useState } from "react";
@@ -21,11 +21,12 @@ const Barra = () => {
   const handleNavigate = (path: string) => {
     navigate(path);
   };
+  const token= window.localStorage.getItem('token')
   return (
     <div
       style={{ ...fullDiv, backgroundColor: "#F2EAE1", alignItems: "center" }}
     >
-      <div onClick={()=>navigate('/MainPage')} style={{cursor:'pointer', width: "50px", height: "50px", marginLeft: "30px" }}>
+      <div onClick={()=>navigate('/')} style={{cursor:'pointer', width: "50px", height: "50px", marginLeft: "30px" }}>
         <img src={Logo} style={{ width: "50px", height: "50px" }} />
       </div>
       <TextField
@@ -57,10 +58,27 @@ const Barra = () => {
           justifyContent: "center",
         }}
       >
+        {(token===null||token==="") ?
+        <div style={{flexDirection:'row',display:'flex',width:'1000px',height:'80%', marginRight:'200px'}}>
+
+        <Button onClick={()=>
+         {
+          window.localStorage.setItem('from',"Register")
+
+          handleNavigate('/Login')}
+      } sx={{borderRadius:'10px',marginRight:'40px'}}>Registrarse</Button>
+          <Button onClick={()=>
+           {
+            window.localStorage.setItem('from',"Login")
+  
+            handleNavigate('/Login')}
+          }  sx={{borderRadius:'10px',}}>Login</Button> 
+        </div>: 
         <IconButton onClick={handleMenu}>
           {" "}
           <img src={MenuH} style={{ width: "30px", height: "30px" }} />
-        </IconButton>
+        </IconButton>}
+       
       </div>{" "}
       <Menu
         anchorEl={anchorEl}
@@ -71,7 +89,7 @@ const Barra = () => {
         }}
       >
         {" "}
-        <MenuItem onClick={() => handleNavigate("/MainPage")}>
+        <MenuItem onClick={() => handleNavigate("/")}>
           Menu Principal
         </MenuItem>
         <MenuItem onClick={() => handleNavigate("/AdminEmpleados")}>
