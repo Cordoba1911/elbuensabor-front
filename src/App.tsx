@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import Login from "./Pages/Login";
+import MainPage from "./Pages/MainPage";
 export const fullDiv = {
   width: "100%",
   height: "100%",
@@ -24,7 +24,7 @@ function App() {
         overflow: "hidden",
       }}
     >
-      <Login />
+      <MainPage />
     </div>
   );
 }

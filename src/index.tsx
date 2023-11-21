@@ -10,16 +10,17 @@ import AdminClientes from "./Pages/Clientes/AdminClientes";
 import AdminRubros from "./Pages/Rubros/AdminRubros";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AdminManufacturado from "./Pages/Manufacturados/AdminManufacturados";
+import Login from "./Pages/Login";
 import { SnackbarProvider } from "notistack";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <MainPage />,
   },
   {
-    path: "/MainPage",
-    element: <MainPage />,
+    path: "/Login",
+    element: <Login />,
   },
   {
     path: "/AdminEmpleados",
@@ -46,7 +47,8 @@ root.render(
   <React.StrictMode>
     <SnackbarProvider>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} /></QueryClientProvider>
+        <RouterProvider router={router}  /></QueryClientProvider>
+      
         </SnackbarProvider> 
   </React.StrictMode>
 );
