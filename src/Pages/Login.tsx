@@ -70,6 +70,7 @@ if(from==='Register'){
   const handleNavigate = () => {
     navigate("/");
   };
+  const[from,setFrom]=useState("")
   return (
     <div
       style={{
@@ -154,7 +155,7 @@ if(from==='Register'){
           }}
         >
           <Box
-            onClick={(): void => setOpenRegistrarUsuario(true)}
+            onClick={(): void => {setOpenRegistrarUsuario(true);setFrom("USUARIO")}}
             sx={{
               "&: hover": {
                 color: "#329ED0",
@@ -173,6 +174,7 @@ if(from==='Register'){
             Registrarse como cliente
           </Box>
           <Box
+            onClick={(): void => {setOpenRegistrarUsuario(true);setFrom("ADMIN")}}
             sx={{
               "&: hover": {
                 color: "#329ED0",
@@ -217,6 +219,7 @@ if(from==='Register'){
         </div>
       </div>
       <RegistrarUsuario
+      from={from}
         openRegistrarUsuario={openRegistrarUsuario}
         setOpenRegistrarUsuario={setOpenRegistrarUsuario}
       />

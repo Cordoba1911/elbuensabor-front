@@ -50,7 +50,7 @@ const FormularioCliente = ({selected,setOpenDialog,refetch}:{selected:any,setOpe
        
   const handleGuardar=()=>{
     mutationGuardar.mutate(
-      input//ESTO SE VE
+      input
     )
   }
  
