@@ -13,8 +13,9 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import RegistrarUsuario from "./Registrar/RegistrarUsuario";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { customAxiosInstance } from "../axiosService";
+import { customAxiosInstance } from "../Services/axiosService";
 import { useSnackbar } from "notistack";
+import { usePostDataLogin } from "../Services/apiServiceLogin";
 interface IUser {
   username: string;
   password: string;
@@ -30,42 +31,35 @@ const Login = (): ReactElement => {
     // apellido:"",
   });
   const {enqueueSnackbar}=useSnackbar()
-const from = window.localStorage.getItem('from')
+const fromS = window.localStorage.getItem('from')
 useEffect(()=>{
-if(from==='Register'){
+if(fromS==='Register'){
   setOpenRegistrarUsuario(true)
 }
-},[from])
+},[fromS])
 
   const [seePassword, setSeePassword] = useState<boolean>(false);
   const [openRegistrarUsuario, setOpenRegistrarUsuario] =
     useState<boolean>(false);
-    const mutationAuth = useMutation(
+  
+    const { response: postDataResponse, refetch: refetchPostData } = usePostDataLogin(
+      user
+    );
     
-      (data: any) =>
-        customAxiosInstance.post(
-         '/auth/login',
-         data
-        ),
-      {
-        onSuccess: (data) => {
-          const token=data.data.token
-          window.localStorage.setItem('token',token)
-          // customAxiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
-          handleNavigate()
-        },
-        onError: (error: string) => {
-          enqueueSnackbar(error, {
-            variant: 'error',
-          });
-        },
-      }
-      )
-         
+      useEffect(()=>{
+        if(postDataResponse!==null){
+          console.log({postDataResponse})
+           const token=postDataResponse.data.token
+           window.localStorage.setItem('token',token)
+           window.localStorage.setItem('isAdmin',user.username.includes('admin').toString())
+        // customAxiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+           handleNavigate()
+   
+        }
+       },[postDataResponse])
     const handleAuth=()=>{
-      mutationAuth.mutate(
-        user//ESTO SE VE
-      )
+      refetchPostData()
     }
   const handleNavigate = () => {
     navigate("/");

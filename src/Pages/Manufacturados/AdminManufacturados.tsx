@@ -1,20 +1,28 @@
 import { fullDiv } from "../../App";
 import Barra from "../Barra";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useState,useMemo,useEffect } from "react";
 import Footer from "../Footer";
 import { IconButton, Dialog, Button } from "@mui/material";
 import Mas from "../../Iconos/add.svg";
 import FormularioManufacturado from "./FormularioManufacturado";
-import { useQuery,useMutation } from "@tanstack/react-query";
-import { customAxiosInstance } from "../../axiosService";
+import { customAxiosInstance } from "../../Services/axiosService";
 import { useSnackbar } from "notistack";
+import { useDeleteDataManufacturados, useGetDataManufacturados } from "../../Services/apiServiceManufacturados";
+export interface RowManuf{
+  id?:number;
+  precioVenta:string;
+    tiempoEstimadoCocina:string;
+    costo:string;
+    receta:string;
+  denominacion:string
+}
 const AdminManufacturado = () => {
-  const handleEditar=(row:any)=>{
+  const handleEditar=(row:RowManuf)=>{
     setSelected(row);
     setOpenDialog(true)
   }
-  const handleEliminar=(row:any)=>{
+  const handleEliminar=(row:RowManuf)=>{
     setSelected(row);
     setOpenDialogEliminar(true)
   }
@@ -25,7 +33,7 @@ const AdminManufacturado = () => {
       width: 60,
       filterable: false,
       sortable: false,
-      getActions: (params: { row: any }) => [
+      getActions: (params: { row: RowManuf }) => [
         <GridActionsCellItem
           label="Editar"
            onClick={()=>handleEditar(params.row)}
@@ -76,63 +84,28 @@ const AdminManufacturado = () => {
       sortable: true,
     },
   ];
-  const [rows, setRows] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
-  const [selected,setSelected]=useState<any>(null)
+  const [selected,setSelected]=useState<RowManuf|null>(null)
   //! ESTO HACE EL GET DE LAS FILAS Y LO SETEA EN EL ESTADO GETROWS PARA MOSTRARLO EN LA TABLA
-  const {refetch}=useQuery(
-    ['getAdminEMpleados'],
-    () =>
-      customAxiosInstance.get('api/v1/articuloManufacturados/paged', {
-        params: {
-          page:0,
-          size:5,
-          sort:'id,asc'
+  const { data: manufacturadosData, refetch: refetchManufacturados } = useGetDataManufacturados({
+    page: 0,
+    size: 10,})
+ 
+  useEffect(()=>{refetchManufacturados()},[])
+  const rows=useMemo(()=>!manufacturadosData?.content?[]:manufacturadosData.content,[manufacturadosData])
+   
 
-        },
-      
-      }),
-    {
-     
-      onSuccess: (res:any) => {
-       setRows(res.data.content)
-      },
-      onError: (error: string) => {
-        enqueueSnackbar(error, {
-          variant: 'error',
-        });
-      },
-    }
-  );
-  const mutationEliminarFila = useMutation(
-    //!ESTA DATA ES EL ID
-    (data: any) =>
-      customAxiosInstance.delete(
-      `/api/v1/articuloManufacturados/${selected.id}`
-       
-      ),
-    {
-      onSuccess: () => {
-        enqueueSnackbar('Correcto', {
-          variant: 'success',
-        });
-        setOpenDialogEliminar(false);
-        refetch()
-      },
-      onError: (error: string) => {
-        enqueueSnackbar(error, {
-          variant: 'error',
-        });
-      },
-    }
-    )
-       
+  const { response: deleteDataResponse, refetch: refetchDeleteData } = useDeleteDataManufacturados(selected?.id);
+
+       useEffect(()=>{
+        if(deleteDataResponse!==null){
+          setOpenDialogEliminar(false);
+          refetchManufacturados()
+        }
+       },[deleteDataResponse])
   const handleEliminarFila=()=>{
-    mutationEliminarFila.mutate(
-     selected.id
-    )
+    refetchDeleteData()
   }
   return (
     <div
@@ -189,7 +162,7 @@ const AdminManufacturado = () => {
         open={openDialog}
       >
         <div style={{ ...fullDiv, height: "75vh" }}>
-          <FormularioManufacturado selected={selected} setOpenDialog={setOpenDialog} refetch={refetch}/>
+          <FormularioManufacturado selected={selected} setOpenDialog={setOpenDialog} refetch={refetchManufacturados}/>
         </div>
       </Dialog>
       <Dialog

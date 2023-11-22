@@ -1,7 +1,7 @@
 import { fullDiv } from "../../App";
 import { Button } from "@mui/material";
 
-export const DialogFooter = ({ func,disabled=false }: { func: any,disabled?:any }) => {
+export const DialogFooter = ({ func,disabled=false }: { func: ()=>void,disabled?:boolean }) => {
   return (
     <div
       style={{

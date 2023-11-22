@@ -3,11 +3,13 @@ import { fullDiv } from "../../App";
 import DialogTitle, { DialogFooter } from "../General/DialogTitle";
 import { IconButton, TextField, Menu, MenuItem, Button } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import { customAxiosInstance } from "../../axiosService";
+import { customAxiosInstance } from "../../Services/axiosService";
 import { useSnackbar } from "notistack";
+import { usePostDataManufacturados } from "../../Services/apiServiceManufacturados";
+import { RowManuf } from "./AdminManufacturados";
 
-const FormularioManufacturado = ({selected,setOpenDialog,refetch}:{selected:any,setOpenDialog:any,refetch:any}) => {
-  const[input,setInput]=useState({
+const FormularioManufacturado = ({selected,setOpenDialog,refetch}:{selected:RowManuf|null,setOpenDialog:(value:boolean)=>void,refetch:()=>void}) => {
+  const[input,setInput]=useState<RowManuf>({
     denominacion:'',
     precioVenta:'',
     tiempoEstimadoCocina:'',
@@ -21,41 +23,23 @@ const FormularioManufacturado = ({selected,setOpenDialog,refetch}:{selected:any,
       setInput(selected)
     }
   },[])
-  const changeValue=(e:any,atributo:string)=>{
+  const changeValue=(e:{target:{value:string}},atributo:string)=>{
     setInput((prev)=>({...prev,[atributo]:e.target.value}))
   }
- const {enqueueSnackbar}=useSnackbar()
-  const mutationGuardar = useMutation(
-    
-    (data: any) =>
-      customAxiosInstance.post(
-       '/api/v1/articuloManufacturados',
-       { ...data,
-        precioVenta:parseInt(data.precioVenta),
-        tiempoEstimadoCocina:parseInt(data.tiempoEstimadoCocina),
-        costo:parseInt(data.costo),}
-      ),
-    {
-      onSuccess: (data) => {
-        enqueueSnackbar('Correcto', {
-          variant: 'success',
-        });
-        setOpenDialog()
+  const { response: postDataResponse, refetch: refetchPostData } = usePostDataManufacturados(
+    input
+  );
+  
+    useEffect(()=>{
+      if(postDataResponse!==null){
+        setOpenDialog(false);
         refetch()
-      },
-      onError: (error: string) => {
-        enqueueSnackbar(error, {
-          variant: 'error',
-        });
-      },
+      }
+     },[postDataResponse])
+    const handleGuardar=()=>{
+      refetchPostData()
+      
     }
-    )
-       
-  const handleGuardar=()=>{
-    mutationGuardar.mutate(
-      input//ESTO SE VE
-    )
-  }
   return (
     <div style={{ ...fullDiv, flexDirection: "column" }}>
       <DialogTitle title={"Empleados"} />

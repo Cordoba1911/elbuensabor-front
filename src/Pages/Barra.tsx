@@ -6,22 +6,25 @@ import { MouseEvent, useState } from "react";
 import { fullDiv } from "../App";
 import { useNavigate } from "react-router-dom";
 const Barra = () => {
+  //States
   const [buscador, setBuscador] = useState("");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  //Abrir y cerrar el menu
   const open = Boolean(anchorEl);
-
   const handleMenu = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
+  //Navegacion
   const navigate = useNavigate();
-
   const handleNavigate = (path: string) => {
     navigate(path);
   };
+  //Estados de la store
   const token= window.localStorage.getItem('token')
+  const isAdmin= window.localStorage.getItem('isAdmin')==='true'
   return (
     <div
       style={{ ...fullDiv, backgroundColor: "#F2EAE1", alignItems: "center" }}
@@ -88,11 +91,11 @@ const Barra = () => {
           "aria-labelledby": "basic-button",
         }}
       >
-        {" "}
+        
         <MenuItem onClick={() => handleNavigate("/")}>
           Menu Principal
         </MenuItem>
-        <MenuItem onClick={() => handleNavigate("/AdminEmpleados")}>
+        {isAdmin?<> <MenuItem onClick={() => handleNavigate("/AdminEmpleados")}>
           Administracion Empleados
         </MenuItem> 
         <MenuItem onClick={() => handleNavigate("/AdminClientes")}>
@@ -103,6 +106,15 @@ const Barra = () => {
         </MenuItem>
         <MenuItem onClick={() => handleNavigate("/AdminManufacturados")}>
           Administracion Manufacturados
+        </MenuItem></>:<>
+        <MenuItem >
+         Ver Carrito
+        </MenuItem></>}
+       
+        <MenuItem onClick={() => {handleNavigate("/Login");
+       window.localStorage.setItem('token',"")
+      }}>
+          Cerrar Sesion
         </MenuItem>
       </Menu>
     </div>

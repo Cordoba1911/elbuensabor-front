@@ -1,20 +1,24 @@
 import { fullDiv } from "../../App";
 import Barra from "../Barra";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useState,useMemo,useEffect } from "react";
 import Footer from "../Footer";
 import { IconButton, Dialog, Button } from "@mui/material";
 import Mas from "../../Iconos/add.svg";
 import FormularioRubros from "./FormularioRubros";
 import { useSnackbar } from "notistack";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { customAxiosInstance } from "../../axiosService";
+import { customAxiosInstance } from "../../Services/axiosService";
+import { useDeleteDataRubros, useGetDataRubros } from "../../Services/apiServiceRubros";
+export interface RowRubros{
+  id?:number;
+  denominacion:string
+}
 const AdminRubro = () => {
-  const handleEditar=(row:any)=>{
+  const handleEditar=(row:RowRubros)=>{
     setSelected(row);
     setOpenDialog(true)
   }
-  const handleEliminar=(row:any)=>{
+  const handleEliminar=(row:RowRubros)=>{
     setSelected(row);
     setOpenDialogEliminar(true)
   }
@@ -25,7 +29,7 @@ const AdminRubro = () => {
       width: 60,
       filterable: false,
       sortable: false,
-      getActions: (params: { row: any }) => [
+      getActions: (params: { row: RowRubros }) => [
         <GridActionsCellItem
           label="Editar"
            onClick={()=>handleEditar(params.row)}
@@ -49,65 +53,31 @@ const AdminRubro = () => {
     },
     
   ];
-  const [rows, setRows] = useState([
-   
-  ]);
+ 
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
-  const [selected,setSelected]=useState<any>(null)
+  const [selected,setSelected]=useState<RowRubros|null>(null)
   //! ESTO HACE EL GET DE LAS FILAS Y LO SETEA EN EL ESTADO GETROWS PARA MOSTRARLO EN LA TABLA
-  const {refetch}=useQuery(
-    ['getAdminRubros'],
-    () =>
-    customAxiosInstance.get('api/v1/rubros/paged', {
-      params: {
-        page:0,
-        size:5,
-        sort:'id,asc'
+//USE GET DATA
+  const { data: rubrosData, refetch: refetchRubros } = useGetDataRubros({
+    page: 0,
+    size: 10,})
+ 
+  useEffect(()=>{refetchRubros()},[])
+  const rows=useMemo(()=>!rubrosData?.content?[]:rubrosData.content,[rubrosData])
+   
 
-      },
-    
-    }),
-    {
-     
-      onSuccess: (res:any) => {
-        setRows(res.data.content)
-      },
-      onError: (error: string) => {
-        enqueueSnackbar(error, {
-          variant: 'error',
-        });
-      },
-    }
-  );
-  const mutationEliminarFila = useMutation(
-    //!ESTA DATA ES EL ID
-    (data: any) =>
-      customAxiosInstance.delete(
-        `/api/v1/rubros/${selected.id}`
-      ),
-    {
-      onSuccess: () => {
-        enqueueSnackbar('Correcto', {
-          variant: 'success',
-        }); 
-        setOpenDialogEliminar(false);
-        refetch()
-      },
-      onError: (error: string) => {
-        enqueueSnackbar(error, {
-          variant: 'error',
-        });
-      },
-    }
-    )
-       
+  const { response: deleteDataResponse, refetch: refetchDeleteData } = useDeleteDataRubros(selected?.id);
+
+       useEffect(()=>{
+        if(deleteDataResponse!==null){
+          setOpenDialogEliminar(false);
+          refetchRubros()
+        }
+       },[deleteDataResponse])
   const handleEliminarFila=()=>{
-    mutationEliminarFila.mutate(
-      selected.id
-    )
+    refetchDeleteData()
   }
   return (
     <div
@@ -163,7 +133,7 @@ const AdminRubro = () => {
         open={openDialog}
       >
         <div style={{ ...fullDiv, height: "30vh" }}>
-          <FormularioRubros selected={selected} setOpenDialog={setOpenDialog} refetch={refetch}/>
+          <FormularioRubros selected={selected} setOpenDialog={setOpenDialog} refetch={refetchRubros}/>
         </div>
       </Dialog>
       <Dialog
