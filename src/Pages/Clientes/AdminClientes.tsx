@@ -7,6 +7,7 @@ import { IconButton, Dialog, Button } from "@mui/material";
 import Mas from "../../Iconos/add.svg";
 import FormularioCliente from "./FormularioCliente";
 import { useDeleteDataClientes, useGetDataClientes } from "../../Services/apiServiceClientes";
+import { useSnackbar } from "notistack";
 export interface RowCliente{
   nombre:string;
   apellido:string;
@@ -21,10 +22,6 @@ export interface RowCliente{
   telefono:string;
   rol:string;
 }
-
-import { useSnackbar } from "notistack";
-import './styles.css';
-
 const AdminClientes = () => {
   //States
   const [openDialog, setOpenDialog] = useState(false);
@@ -113,18 +110,37 @@ const AdminClientes = () => {
   }
 
   return (
-    <div className="container">
+    <div   style={{
+      width: "100vw",
+      height: "100vh",
+      display: "grid",
+      gridTemplateRows: "50px auto 50px",
+      backgroundColor: "#ffffff",
+    }}>
       <Barra />
-       <div className="fullDiv">
-        <div className="header">
-          <span className="boldText">
+       <div style={{ ...fullDiv, flexDirection: "column", justifyContent:'center' }}>
+        <div  style={{
+            width: "100%",
+            height: "50px",
+            display: "flex",
+            alignItems: "center",
+           
+          }}>
+          <span style={{ marginLeft: "30px", fontWeight: "bold" }}>
             Administración Clientes
           </span>
           <IconButton
-            className="iconButton"
-            onClick={() => setOpenDialog(true)}
+ sx={{
+  marginLeft: "auto",
+  marginRight: "30px",
+  width: "30px",
+  height: "30px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}}            onClick={() => setOpenDialog(true)}
           >
-            <img src={Mas} className="imgStyle" />
+            <img src={Mas}  style={{ width: "25px", height: "25px" }} />
           </IconButton>
         </div>
       <DataGrid

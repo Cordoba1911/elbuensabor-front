@@ -25,6 +25,7 @@ customAxiosInstance.interceptors.response.use(
 
 export { customAxiosInstance };
 
+const token=window.localStorage.getItem('token')
 
 
 export const fetchData = async (
@@ -32,7 +33,15 @@ export const fetchData = async (
   params?: any
 ): Promise<AxiosResponse<any>> => {
   try {
-    const response = await axios.get(`${baseUrl}${url}`, { params });
+    const response = await axios.get(
+      `${baseUrl}${url}`, 
+      { 
+        params, 
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }, 
+      }
+    );
     return response;
   } catch (error:any) {
     throw error.response?.data || error.message;
@@ -43,8 +52,17 @@ export const postData = async (
   url: string,
   data?: any
 ): Promise<AxiosResponse<any>> => {
+
   try {
-    const response = await axios.post(`${baseUrl}${url}`, data);
+    const response = await axios.post(
+      `${baseUrl}${url}`, 
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+      );
     return response;
   } catch (error:any) {
     throw error.response?.data || error.message;
@@ -54,8 +72,15 @@ export const postData = async (
 export const deleteData = async (
   url: string
 ): Promise<AxiosResponse<any>> => {
+  
   try {
-    const response = await axios.delete(`${baseUrl}${url}`);
+    const response = await axios.delete(
+      `${baseUrl}${url}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     return response;
   } catch (error:any) {
     throw error.response?.data || error.message;
