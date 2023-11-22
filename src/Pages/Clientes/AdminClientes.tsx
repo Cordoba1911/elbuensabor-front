@@ -21,6 +21,10 @@ export interface RowCliente{
   telefono:string;
   rol:string;
 }
+
+import { useSnackbar } from "notistack";
+import './styles.css';
+
 const AdminClientes = () => {
   //States
   const [openDialog, setOpenDialog] = useState(false);
@@ -109,43 +113,18 @@ const AdminClientes = () => {
   }
 
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        display: "grid",
-        
-        gridTemplateRows: "50px auto 50px",
-        backgroundColor: "#ffffff",
-      }}
-    >
+    <div className="container">
       <Barra />
-       <div style={{ ...fullDiv, flexDirection: "column", justifyContent:'center' }}>
-        <div
-          style={{
-            width: "100%",
-            height: "50px",
-            display: "flex",
-            alignItems: "center",
-           
-          }}
-        >
-          <span style={{ marginLeft: "30px", fontWeight: "bold" }}>
+       <div className="fullDiv">
+        <div className="header">
+          <span className="boldText">
             Administración Clientes
           </span>
           <IconButton
-            sx={{
-              marginLeft: "auto",
-              marginRight: "30px",
-              width: "30px",
-              height: "30px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+            className="iconButton"
             onClick={() => setOpenDialog(true)}
           >
-            <img src={Mas} style={{ width: "25px", height: "25px" }} />
+            <img src={Mas} className="imgStyle" />
           </IconButton>
         </div>
       <DataGrid
