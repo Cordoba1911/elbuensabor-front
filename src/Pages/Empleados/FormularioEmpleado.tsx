@@ -3,11 +3,15 @@ import { fullDiv } from "../../App";
 import DialogTitle, { DialogFooter } from "../General/DialogTitle";
 import { IconButton, TextField, Menu, MenuItem, Button } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import { customAxiosInstance } from "../../axiosService";
+import { customAxiosInstance } from "../../Services/axiosService";
 import { useSnackbar } from "notistack";
+import { usePostData } from "../../Services/apiService";
+import { usePostDataEmpleados } from "../../Services/apiServiceEmpleados";
+import { RowEmpleado } from "./AdminEmpleados";
 
-const FormularioEmpleado = ({selected,setOpenDialog,refetch}:{selected:any,setOpenDialog:any,refetch:any}) => {
-  const[input,setInput]=useState({
+const FormularioEmpleado = ({selected,setOpenDialog,refetch}:{selected:RowEmpleado|null,setOpenDialog:(value:boolean)=>void,refetch:()=>void}) => {
+  //States
+  const[input,setInput]=useState<RowEmpleado>({
     nombre:'',
     apellido:'',
     telefono:'',
@@ -15,43 +19,28 @@ const FormularioEmpleado = ({selected,setOpenDialog,refetch}:{selected:any,setOp
     rol:'EMPLEADO',
    
   })
- 
+  //Si se quiere editar data llena los campos
   useEffect(()=>{
     if(selected!==null){
       setInput(selected)
     }
   },[])
-  const changeValue=(e:any,atributo:string)=>{
+  //Cambiar el valor de los inputs
+  const changeValue=(e:{target:{value:string}},atributo:string)=>{
     setInput((prev)=>({...prev,[atributo]:e.target.value}))
   }
- const {enqueueSnackbar}=useSnackbar()
-  const mutationGuardar = useMutation(
-    
-    (data: any) =>
-      customAxiosInstance.post(
-       '/api/v1/empleados',
-       { ...data,dni:parseInt(data.dni)}
-      ),
-    {
-      onSuccess: (data) => {
-        enqueueSnackbar('Correcto', {
-          variant: 'success',
-        });
-        setOpenDialog()
-        refetch()
-      },
-      onError: (error: string) => {
-        enqueueSnackbar(error, {
-          variant: 'error',
-        });
-      },
+  //PostData
+ const { response: postDataResponse, refetch: refetchPostData } = usePostDataEmpleados(
+  { ...input,dni:parseInt(input?.dni)}
+  );
+  useEffect(()=>{
+    if(postDataResponse!==null){
+      setOpenDialog(false);
+      refetch()
     }
-    )
-       
+  },[postDataResponse])
   const handleGuardar=()=>{
-    mutationGuardar.mutate(
-      input//ESTO SE VE
-    )
+    refetchPostData()
   }
   return (
     <div style={{ ...fullDiv, flexDirection: "column" }}>

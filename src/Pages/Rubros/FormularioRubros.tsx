@@ -4,9 +4,11 @@ import DialogTitle, { DialogFooter } from "../General/DialogTitle";
 import { IconButton, TextField, Menu, MenuItem, Button } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useMutation } from "@tanstack/react-query";
-import { customAxiosInstance } from "../../axiosService";
+import { customAxiosInstance } from "../../Services/axiosService";
+import { usePostDataRubros } from "../../Services/apiServiceRubros";
+import { RowRubros } from "./AdminRubros";
 
-const FormularioRubros = ({selected,setOpenDialog,refetch}:{selected:any,setOpenDialog:any,refetch:any}) => {
+const FormularioRubros = ({selected,setOpenDialog,refetch}:{selected:RowRubros|null,setOpenDialog:(value:boolean)=>void,refetch:()=>void}) => {
   const[input,setInput]=useState({
     denominacion:'',
   
@@ -16,39 +18,24 @@ const FormularioRubros = ({selected,setOpenDialog,refetch}:{selected:any,setOpen
       setInput(selected)
     }
   },[])
-  const changeValue=(e:any,atributo:string)=>{
+  const changeValue=(e:{target:{value:string}},atributo:string)=>{
     setInput((prev)=>({...prev,[atributo]:e.target.value}))
   }
  
-  const {enqueueSnackbar}=useSnackbar()
-  const mutationGuardar = useMutation(
-    //!ESTA DATA ES EL ID
-    (data: any) =>
-      customAxiosInstance.post(
-        '/api/v1/rubros',
-        data
-      ),
-    {
-      onSuccess: (data) => {
-        enqueueSnackbar('Correcto', {
-          variant: 'success',
-        });
-        setOpenDialog()
+  const { response: postDataResponse, refetch: refetchPostData } = usePostDataRubros(
+    input
+  );
+  
+    useEffect(()=>{
+      if(postDataResponse!==null){
+        setOpenDialog(false);
         refetch()
-      },
-      onError: (error: string) => {
-        enqueueSnackbar(error, {
-          variant: 'error',
-        });
-      },
+      }
+     },[postDataResponse])
+    const handleGuardar=()=>{
+      refetchPostData()
+      
     }
-    )
-       
-  const handleGuardar=()=>{
-    mutationGuardar.mutate(
-      input//ESTO SE VE
-    )
-  }
   return (
     <div style={{ ...fullDiv, flexDirection: "column" }}>
       <DialogTitle title={"Rubros"} />

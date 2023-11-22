@@ -1,14 +1,16 @@
 import { Dialog, TextField,Button } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
-import { Dispatch, ReactElement, SetStateAction, useState } from "react";
-import { customAxiosInstance } from "../../axiosService";
+import { Dispatch, ReactElement, SetStateAction, useState ,useEffect} from "react";
+import { customAxiosInstance } from "../../Services/axiosService";
+import { usePostDataRegister } from "../../Services/apiServiceRegister";
 
 interface IRegistrarUsuario {
   nombre: string;
     apellido: string;
     username: string;
     password: string;
+    rol:string
 }
 const RegistrarUsuario = ({
   openRegistrarUsuario,
@@ -17,7 +19,7 @@ const RegistrarUsuario = ({
   openRegistrarUsuario: boolean;
   setOpenRegistrarUsuario: Dispatch<SetStateAction<boolean>>;from:string
 }): ReactElement => {
-  const [input, setInput] = useState({
+  const [input, setInput] = useState<IRegistrarUsuario>({
     nombre: "",
     apellido: "",
     username: "",
@@ -31,34 +33,27 @@ const RegistrarUsuario = ({
     height: "100%",
     display: "flex",
     alignItems: "center",
-  };  const {enqueueSnackbar}=useSnackbar()
+  };  
 
-  const mutationAuth = useMutation(
-    
-    (data: any) =>
-      customAxiosInstance.post(
-       '/auth/register',
-       data
-      ),
-    {
-      onSuccess: (data) => {
-        const token=data.data.token
-        setOpenRegistrarUsuario(false)
-        window.localStorage.setItem('token',token)
-        customAxiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
-      },
-      onError: (error: string) => {
-        enqueueSnackbar(error, {
-          variant: 'error',
-        });
-      },
+  
+  const { response: postDataResponse, refetch: refetchPostData } = usePostDataRegister(
+    input
+  );
+  
+    useEffect(()=>{
+      if(postDataResponse!==null){
+        console.log({postDataResponse})
+         const token=postDataResponse.data.token
+         setOpenRegistrarUsuario(false)
+         window.localStorage.setItem('token',token)
+               
+      }
+     },[postDataResponse])
+    const handleRegister=()=>{
+      refetchPostData()
+      
     }
-    )
-  const handleRegister=()=>{
-    mutationAuth.mutate(
-      input//ESTO SE VE
-    )
-  }
+
   return (
     <Dialog
       fullWidth
@@ -100,7 +95,7 @@ const RegistrarUsuario = ({
             label={"Nombre"}
             value={input.nombre}
             onChange={(e): void =>
-              setInput((prev): any => ({
+              setInput((prev): IRegistrarUsuario => ({
                 ...prev,
                 nombre: e.target.value,
               }))
@@ -117,7 +112,7 @@ const RegistrarUsuario = ({
             label={"Apellido"}
             value={input.apellido}
             onChange={(e): void =>
-              setInput((prev): any => ({
+              setInput((prev): IRegistrarUsuario => ({
                 ...prev,
                 apellido: e.target.value,
               }))
@@ -134,7 +129,7 @@ const RegistrarUsuario = ({
             label={"Username"}
             value={input.username}
             onChange={(e): void =>
-              setInput((prev): any => ({
+              setInput((prev): IRegistrarUsuario => ({
                 ...prev,
                 username: e.target.value,
               }))
@@ -151,7 +146,7 @@ const RegistrarUsuario = ({
             label={"Password"}
             value={input.password}
             onChange={(e): void =>
-              setInput((prev): any => ({
+              setInput((prev): IRegistrarUsuario => ({
                 ...prev,
                 password: e.target.value,
               }))

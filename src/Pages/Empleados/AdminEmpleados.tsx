@@ -1,23 +1,43 @@
 import { fullDiv } from "../../App";
 import Barra from "../Barra";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useState,useMemo,useEffect } from "react";
 import Footer from "../Footer";
 import { IconButton, Dialog, Button } from "@mui/material";
 import Mas from "../../Iconos/add.svg";
 import FormularioEmpleado from "./FormularioEmpleado";
-import { useQuery,useMutation } from "@tanstack/react-query";
-import { customAxiosInstance } from "../../axiosService";
-import { useSnackbar } from "notistack";
+import {  useDeleteDataEmpleados, useGetDataEmpleados } from "../../Services/apiServiceEmpleados";
+export interface RowEmpleado{
+  nombre:string;
+  apellido:string;
+  dni:string;
+  fechaAlta?: null;
+  fechaBaja?: null;
+  email?:string;
+  fechaModificacion?:null;
+  id?: number;  
+  pedidos?: string[];
+  rolEmpleado?: null;
+  telefono:string;
+  rol:string;
+}
 const AdminEmpleados = () => {
-  const handleEditar=(row:any)=>{
+  //States
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
+  const [selected,setSelected]=useState<RowEmpleado|null>(null)
+  //Funcion para abrir dialogo de edicion
+  const handleEditar=(row:RowEmpleado)=>{
     setSelected(row);
     setOpenDialog(true)
   }
-  const handleEliminar=(row:any)=>{
+  
+  //Funcion para abrir dialogo de edicion
+  const handleEliminar=(row:RowEmpleado)=>{
     setSelected(row);
     setOpenDialogEliminar(true)
   }
+  //Columnas de la tabla
   const columnas = [
     {
       field: "actions",
@@ -25,7 +45,7 @@ const AdminEmpleados = () => {
       width: 60,
       filterable: false,
       sortable: false,
-      getActions: (params: { row: any }) => [
+      getActions: (params: { row: RowEmpleado }) => [
         <GridActionsCellItem
           label="Editar"
            onClick={()=>handleEditar(params.row)}
@@ -75,63 +95,25 @@ const AdminEmpleados = () => {
       sortable: true,
     },
   ];
-  const [rows, setRows] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
-  const [selected,setSelected]=useState<any>(null)
-  //! ESTO HACE EL GET DE LAS FILAS Y LO SETEA EN EL ESTADO GETROWS PARA MOSTRARLO EN LA TABLA
-  const {refetch}=useQuery(
-    ['getAdminEMpleados'],
-    () =>
-      customAxiosInstance.get('api/v1/empleados/paged', {
-        params: {
-          page:0,
-          size:5,
-          sort:'id,asc'
 
-        },
-      
-      }),
-    {
-     
-      onSuccess: (res:any) => {
-       setRows(res.data.content)
-      },
-      onError: (error: string) => {
-        enqueueSnackbar(error, {
-          variant: 'error',
-        });
-      },
+  //GetData
+  const { data: empleadosData, refetch: refetchEmpleados } = useGetDataEmpleados({
+    page: 0,
+    size: 10,
+  })
+  useEffect(()=>{refetchEmpleados()},[])
+  const rows=useMemo(()=>!empleadosData?.content?[]:empleadosData.content,[empleadosData])
+  
+  //DeleteData
+  const { response: deleteDataResponse, refetch: refetchDeleteData } = useDeleteDataEmpleados(selected?.id);
+  useEffect(()=>{
+    if(deleteDataResponse!==null){
+      setOpenDialogEliminar(false);
+      refetchEmpleados()
     }
-  );
-  const mutationEliminarFila = useMutation(
-    //!ESTA DATA ES EL ID
-    (data: any) =>
-      customAxiosInstance.delete(
-      `/api/v1/empleados/${selected.id}`
-       
-      ),
-    {
-      onSuccess: () => {
-        enqueueSnackbar('Correcto', {
-          variant: 'success',
-        });
-        setOpenDialogEliminar(false);
-        refetch()
-      },
-      onError: (error: string) => {
-        enqueueSnackbar(error, {
-          variant: 'error',
-        });
-      },
-    }
-    )
-       
+  },[deleteDataResponse])
   const handleEliminarFila=()=>{
-    mutationEliminarFila.mutate(
-     selected.id
-    )
+    refetchDeleteData()
   }
   return (
     <div
@@ -188,7 +170,9 @@ const AdminEmpleados = () => {
         open={openDialog}
       >
         <div style={{ ...fullDiv, height: "75vh" }}>
-          <FormularioEmpleado selected={selected} setOpenDialog={setOpenDialog} refetch={refetch}/>
+          <FormularioEmpleado selected={selected} setOpenDialog={setOpenDialog} 
+           refetch={refetchEmpleados}
+          />
         </div>
       </Dialog>
       <Dialog
